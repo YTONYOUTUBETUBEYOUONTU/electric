@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
@@ -9,6 +8,9 @@ class Proyecto(models.Model):
     estado = models.BooleanField(default=False)
     creado_en = models.DateTimeField()
     modificado_en = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.nombre
 
 class Cotizacion(models.Model):
     proyecto = models.ForeignKey(Proyecto, related_name='cotizaciones', on_delete=models.CASCADE)
@@ -36,6 +38,22 @@ class CotizacionManoObra(models.Model):
     creado_en = models.DateTimeField(auto_now_add=True)
     modificado_en = models.DateTimeField(auto_now=True)
 
-
-
-        
+class Trabajo(models.Model):
+    proyecto = models.ForeignKey(Proyecto, related_name='trabajos', on_delete=models.CASCADE)
+    descripcion = models.TextField()
+    completado = models.BooleanField(default=False)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    
+class Tarea(models.Model):
+    proyecto = models.ForeignKey(Proyecto, related_name='tareas', on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+    responsable = models.CharField(max_length=100, blank=True, null=True)
+    fecha_inicio = models.DateTimeField(auto_now_add=True)
+    fecha_limite = models.DateTimeField(blank=True, null=True)
+    completa = models.BooleanField(default=False)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.nombre + ' ' + self.proyecto.nombre
